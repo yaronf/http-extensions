@@ -4544,6 +4544,8 @@ Document History
 
          o  Call out potential issues with Content-Digest in example.
 
+         o  Add JWK formats for all keys.
+
       -  -13
 
          o  Renamed "context" parameter to "tag".
