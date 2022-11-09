@@ -300,7 +300,7 @@ Table of Contents
    |  Foo-Example is an Item Structured Header [RFC8941].  Its value
    |  MUST be an Integer (Section 3.3.1 of [RFC8941]).  Its ABNF is:
    |  
-   |     Foo-Example = sf-integer
+   |       Foo-Example = sf-integer
    |  
    |  Its value indicates the amount of Foo in the message, and it MUST
    |  be between 0 and 10, inclusive; other values MUST cause the entire
@@ -320,7 +320,7 @@ Table of Contents
    |  
    |  For example:
    |  
-   |     Foo-Example: 2; foourl="https://foo.example.com/"
+   |       Foo-Example: 2; foourl="https://foo.example.com/"
 
 3.  Structured Data Types
 
