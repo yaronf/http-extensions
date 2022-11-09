@@ -570,9 +570,11 @@ Table of Contents
    names (e.g., content-type, date, etag) when using them as component
    names.
 
-   The field value MUST be taken from the named header field of the
-   target message unless this behavior is overridden by additional
-   parameters and rules, such as the req and tr flags, below.
+   The component value for an HTTP field is the field value for the
+   named field as defined in Section 5.5 of [HTTP].  The field value
+   MUST be taken from the named header field of the target message
+   unless this behavior is overridden by additional parameters and
+   rules, such as the req and tr flags, below.
 
    Unless overridden by additional parameters and rules, list-based HTTP
    field values MUST be combined into a single value as defined in
