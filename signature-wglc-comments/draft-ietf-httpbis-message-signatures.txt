@@ -464,9 +464,9 @@ Table of Contents
       be covered to protect the authorization credentials and mandate
       the signature parameters contain a created parameter, while an API
       expecting semantically relevant HTTP message content could require
-      the Content-Digest header field defined in [DIGEST] to be present
-      and covered as well as mandate a value for tag that is specific to
-      the API being protected.
+      the Content-Digest field defined in [DIGEST] to be present and
+      covered as well as mandate a value for tag that is specific to the
+      API being protected.
 
    *  A means of retrieving the key material used to verify the
       signature.  An application will usually use the keyid parameter of
