@@ -1205,13 +1205,13 @@ Table of Contents
    components.  Single named parameters MAY occur in any order in the
    covered components.
 
-   The component value of a single named parameter is the the
-   valueString of the named query parameter defined by HTMLURL,
-   Section 5.1 [HTMLURL], which is the value after percent-encoded
-   octets are decoded.  Note that this value does not include any
-   leading ? characters, equals sign =, or separating & characters.
-   Named query parameters with an empty valueString are included with an
-   empty string as the component value.
+   The component value of a single named parameter is the valueString of
+   the named query parameter defined by HTMLURL, Section 5.1 [HTMLURL],
+   which is the value after percent-encoded octets are decoded.  Note
+   that this value does not include any leading ? characters, equals
+   sign =, or separating & characters.  Named query parameters with an
+   empty valueString are included with an empty string as the component
+   value.
 
    If a query parameter is named as a covered component but it does not
    occur in the query parameters, this MUST cause an error in the
@@ -1222,8 +1222,8 @@ Table of Contents
    POST /path?param=value&foo=bar&baz=batman&qux= HTTP/1.1
    Host: www.example.com
 
-   Indicating the baz, qux and param named query parameters in would
-   result in the following @query-param component values:
+   Indicating the baz, qux and param named query parameters would result
+   in the following @query-param component values:
 
    _baz_: batman
 
