@@ -6,8 +6,8 @@ HTTP                                                     S. Bingler, Ed.
 Internet-Draft                                              M. West, Ed.
 Obsoletes: 6265 (if approved)                                 Google LLC
 Intended status: Standards Track                        J. Wilander, Ed.
-Expires: 11 May 2023                                          Apple, Inc
-                                                         7 November 2022
+Expires: 13 May 2023                                          Apple, Inc
+                                                         9 November 2022
 
 
                 Cookies: HTTP State Management Mechanism
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 May 2023.
+   This Internet-Draft will expire on 13 May 2023.
 
 Copyright Notice
 
@@ -168,6 +168,7 @@ Table of Contents
      A.10. draft-ietf-httpbis-rfc6265bis-09
      A.11. draft-ietf-httpbis-rfc6265bis-10
      A.12. draft-ietf-httpbis-rfc6265bis-11
+     A.13. draft-ietf-httpbis-rfc6265bis-12
    Acknowledgements
    Authors' Addresses
 
@@ -2918,6 +2919,10 @@ A.12.  draft-ietf-httpbis-rfc6265bis-11
    *  Prevent nameless cookies with prefixed values
       https://github.com/httpwg/http-extensions/pull/2251
       (https://github.com/httpwg/http-extensions/pull/2251)
+
+A.13.  draft-ietf-httpbis-rfc6265bis-12
+
+   *  None.  Yet!
 
 Acknowledgements
 
