@@ -124,13 +124,13 @@ Table of Contents
    application requirements.  In order for these types of application
    deployments to work in practice, the reverse proxy needs to convey
    information about the client certificate to the origin application
-   server.  A common way this information is conveyed in practice at the
-   time of writing is by using non-standard fields to carry the
-   certificate (in some encoding) or individual parts thereof in the
-   HTTP request that is dispatched to the origin server.  This solution
-   works but interoperability between independently developed components
-   can be cumbersome or even impossible depending on the implementation
-   choices respectively made (like what field names are used or are
+   server.  At the time of writing, a common way this information is
+   conveyed is by using non-standard fields to carry the certificate (in
+   some encoding) or individual parts thereof in the HTTP request that
+   is dispatched to the origin server.  This solution works but
+   interoperability between independently developed components can be
+   cumbersome or even impossible depending on the implementation choices
+   respectively made (like what field names are used or are
    configurable, which parts of the certificate are exposed, or how the
    certificate is encoded).  A well-known predictable approach to this
    commonly occurring functionality could improve and simplify
