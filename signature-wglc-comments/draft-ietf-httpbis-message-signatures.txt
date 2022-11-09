@@ -3359,15 +3359,15 @@ Table of Contents
    @ character anywhere in the name.  As such, since all derived
    component names start with the @ character, these namespaces should
    be completely separate.  However, some HTTP implementations are not
-   sufficiently strict about the characters accepted in HTTP fields.  In
-   such implementations, a sender (or attacker) could inject a header
-   field starting with an @ character and have it passed through to the
-   application code.  These invalid header fields could be used to
-   override a portion of the derived message content and substitute an
-   arbitrary value, providing a potential place for an attacker to mount
-   a signature collision (Section 7.3.1) attack or other functional
-   substitution attack (such as using the signature from a GET request
-   on a crafted POST request).
+   sufficiently strict about the characters accepted in HTTP field
+   names.  In such implementations, a sender (or attacker) could inject
+   a header field starting with an @ character and have it passed
+   through to the application code.  These invalid header fields could
+   be used to override a portion of the derived message content and
+   substitute an arbitrary value, providing a potential place for an
+   attacker to mount a signature collision (Section 7.3.1) attack or
+   other functional substitution attack (such as using the signature
+   from a GET request on a crafted POST request).
 
    To combat this, when selecting values for a message component, if the
    component name starts with the @ character, it needs to be processed
