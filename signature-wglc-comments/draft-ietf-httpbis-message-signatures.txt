@@ -5,10 +5,10 @@
 HTTP                                                     A. Backman, Ed.
 Internet-Draft                                                    Amazon
 Intended status: Standards Track                          J. Richer, Ed.
-Expires: 12 May 2023                                 Bespoke Engineering
+Expires: 13 May 2023                                 Bespoke Engineering
                                                                M. Sporny
                                                           Digital Bazaar
-                                                         8 November 2022
+                                                         9 November 2022
 
 
                         HTTP Message Signatures
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 May 2023.
+   This Internet-Draft will expire on 13 May 2023.
 
 Copyright Notice
 
@@ -407,8 +407,8 @@ Table of Contents
    list of transformations that could occur under HTTP, provided as
    context:
 
-   *  Re-ordering of fields with different header field names
-      (Section 5.3 of [HTTP]).
+   *  Re-ordering of fields with different field names (Section 5.3 of
+      [HTTP]).
 
    *  Combination of fields with the same field name (Section 5.2 of
       [HTTP]).
@@ -592,19 +592,21 @@ Table of Contents
    follow a syntax that allows for combination of field values in this
    manner (such that the combined output is unambiguous from multiple
    inputs).  Even though the component value is never parsed by the
-   message signature process; instead, it is merely used as part of the
-   signature base in Section 2.5, caution needs to be taken when
-   including such fields in signatures.  The bs parameter defined in
-   Section 2.1.3 provides a method for wrapping such problematic fields.
-   See Section 7.5.6 for more discussion of this issue.
+   message signature process and used only as part of the signature base
+   in Section 2.5, caution needs to be taken when including such fields
+   in signatures since the combined value could be ambiguous.  The bs
+   parameter defined in Section 2.1.3 provides a method for wrapping
+   such problematic fields.  See Section 7.5.6 for more discussion of
+   this issue.
 
-   If the correctly combined value is not available for a given field by
-   an implementation, the following algorithm will produce canonicalized
-   results:
+   If the correctly combined value is not directly available for a given
+   field by an implementation, the following algorithm will produce
+   canonicalized results for list-based fields:
 
    1.  Create an ordered list of the field values of each instance of
        the field in the message, in the order that they occur (or will
-       occur) in the message.
+       occur) in the message.  If necessary, separate individual values
+       found in a field instance.
 
    2.  Strip leading and trailing whitespace from each item in the list.
        Note that since HTTP field values are not allowed to contain
@@ -629,8 +631,8 @@ Table of Contents
    values of such fields to ensure that the signer and verifier can
    derive the same value, as discussed in Section 7.5.2.
 
-   Following are non-normative examples of canonicalized values for
-   header fields, given the following example HTTP message fragment:
+   Following are non-normative examples of component values for header
+   fields, given the following example HTTP message fragment:
 
    Host: www.example.com
    Date: Tue, 20 Apr 2021 02:07:56 GMT
@@ -641,9 +643,9 @@ Table of Contents
    Cache-Control:    must-revalidate
    Example-Dict:  a=1,    b=2;x=1;y=2,   c=(a   b   c)
 
-   The following example shows canonicalized values for these example
-   header fields, presented using the signature base format discussed in
-   Section 2.5:
+   The following example shows the component values for these example
+   header fields, presented using the signature base format defined in
+   in Section 2.5:
 
    "host": www.example.com
    "date": Tue, 20 Apr 2021 02:07:56 GMT
@@ -652,9 +654,9 @@ Table of Contents
    "cache-control": max-age=60, must-revalidate
    "example-dict": a=1,    b=2;x=1;y=2,   c=(a   b   c)
 
-   Since empty HTTP header fields are allowed, they can also be signed
-   when present in a message.  The canonicalized value is the empty
-   string.  This means that the following empty header:
+   Since empty HTTP fields are allowed, they can also be signed when
+   present in a message.  The canonicalized value is the empty string.
+   This means that the following empty header:
 
    NOTE: '\' line wrapping per RFC 8792
 
@@ -668,9 +670,9 @@ Table of Contents
 
    "x-empty-header": \
 
-   Note: these are shown here using the line wrapping algorithm in
-   [RFC8792] due to limitations in the document format that strips
-   trailing spaces from diagrams.
+   Note: the trailing spaces in these values are shown here using the
+   line wrapping algorithm in [RFC8792] due to limitations in the
+   document format that strips trailing spaces from diagrams.
 
    Any HTTP field component identifiers MAY have the following
    parameters in specific circumstances, each described in detail in
@@ -2803,6 +2805,9 @@ Table of Contents
      +------+------------------------------+--------+---------------+
      | bs   | Byte Sequence wrapping       | Active | Section 2.1.3 |
      |      | indicator                    |        | of RFC nnnn   |
+     +------+------------------------------+--------+---------------+
+     | tr   | Trailer                      | Active | Section 2.1.4 |
+     |      |                              |        | of RFC nnnn   |
      +------+------------------------------+--------+---------------+
      | req  | Related request indicator    | Active | Section 2.2.4 |
      |      |                              |        | of RFC nnnn   |
