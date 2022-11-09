@@ -584,11 +584,16 @@ Table of Contents
    allowed to separate values of list-based HTTP fields with any amount
    of whitespace between commas.  If this behavior is not accounted for
    by the verifier, the signature can fail since the addition or removal
-   of spaces between list items will change the signature base.  It is
-   RECOMMENDED that signers and verifiers process list-based fields
-   starting with the individual field values based on the strict
-   algorithm below, where possible, to account for possible intermediary
-   behavior.
+   of spaces between list items will change the signature base.  For
+   robustness, it is RECOMMENDED that messages include only a single
+   value for any field covered under the signature, with the value for
+   list-based fields serialized using the algorithm below.  This
+   approach increases the chances of the field value remaining untouched
+   through intermediaries.  Where that approach is not possible and
+   multiple field lines need to be sent separately, it is RECOMMENDED
+   that signers and verifiers process list-based fields starting with
+   the individual field values based on the strict algorithm below,
+   where possible, to account for possible intermediary behavior.
 
    Note that some HTTP fields, such as Set-Cookie [COOKIE], do not
    follow a syntax that allows for combination of field values in this
