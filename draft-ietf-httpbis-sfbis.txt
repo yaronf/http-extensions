@@ -1489,8 +1489,8 @@ Table of Contents
 
    Because some implementations of base64 do not allow rejection of
    encoded data that is not properly "=" padded (see [RFC4648],
-   Section 3.2, parsers SHOULD NOT fail when "=" padding is not present,
-   unless they cannot be configured to do so.
+   Section 3.2), parsers SHOULD NOT fail when "=" padding is not
+   present, unless they cannot be configured to do so.
 
    Because some implementations of base64 do not allow rejection of
    encoded data that has non-zero pad bits (see [RFC4648], Section 3.5),
@@ -1649,8 +1649,7 @@ Appendix B.  Implementation Notes
    For interoperability, it's important that generic implementations be
    complete and follow the algorithms closely; see Section 1.1.  To aid
    this, a common test suite is being maintained by the community at
-   https://github.com/httpwg/structured-field-tests
-   (https://github.com/httpwg/structured-field-tests).
+   <https://github.com/httpwg/structured-field-tests>.
 
    Implementers should note that Dictionaries and Parameters are order-
    preserving maps.  Some fields may not convey meaning in the ordering
