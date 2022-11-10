@@ -5,10 +5,10 @@
 HTTP                                                     A. Backman, Ed.
 Internet-Draft                                                    Amazon
 Intended status: Standards Track                          J. Richer, Ed.
-Expires: 13 May 2023                                 Bespoke Engineering
+Expires: 14 May 2023                                 Bespoke Engineering
                                                                M. Sporny
                                                           Digital Bazaar
-                                                         9 November 2022
+                                                        10 November 2022
 
 
                         HTTP Message Signatures
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 May 2023.
+   This Internet-Draft will expire on 14 May 2023.
 
 Copyright Notice
 
@@ -585,15 +585,15 @@ Table of Contents
    whitespace between the commas, and if this behavior is not accounted
    for by the verifier, the signature can fail since the signer and
    verifier will be see a different component value in their respective
-   signature bases.  For robustness, it is RECOMMENDED that messages
-   include only a single value for any field covered under the
-   signature, particularly with the value for any list-based fields
+   signature bases.  For robustness, it is RECOMMENDED that signed
+   messages include only a single instance of any field covered under
+   the signature, particularly with the value for any list-based fields
    serialized using the algorithm below.  This approach increases the
    chances of the field value remaining untouched through
    intermediaries.  Where that approach is not possible and multiple
-   field lines need to be sent separately, it is RECOMMENDED that
-   signers and verifiers process any list-based fields by starting with
-   the individual field values and combining them based on the strict
+   instances of a field need to be sent separately, it is RECOMMENDED
+   that signers and verifiers process any list-based fields by parsing
+   out individual field values and combining them based on the strict
    algorithm below, to counter possible intermediary behavior.  When the
    field in question is a structured field of tyle List or Dictionary,
    this effect can be accomplished more directly by using the strict
