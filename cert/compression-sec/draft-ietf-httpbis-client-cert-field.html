@@ -1491,7 +1491,7 @@ employ the <code>Client-Cert</code> or <code>Client-Cert-Chain</code> header fie
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-header-field-compression" class="section-name selfRef">Header Field Compression</a>
         </h3>
 <p id="section-3.1-1">If the connection between the TTRP and origin is capable of field compression
-(e.g., HPACK <span>[<a href="#HPACK" class="cite xref">HPACK</a>]</span> or QPACK <span>[<a href="#QPACK" class="cite xref">QPACK</a>]</span>, and the TTRP multiplexes more
+(e.g., HPACK <span>[<a href="#HPACK" class="cite xref">HPACK</a>]</span> or QPACK <span>[<a href="#QPACK" class="cite xref">QPACK</a>]</span>), and the TTRP multiplexes more
 than one client's requests into that connection, the size and variation of <code>Client-Cert</code> and
 <code>Client-Cert-Chain</code> field values can reduce compression efficiency significantly.
 An origin could mitigate the efficiency loss by increasing the size of the dynamic table.

@@ -330,7 +330,7 @@ Table of Contents
 3.1.  Header Field Compression
 
    If the connection between the TTRP and origin is capable of field
-   compression (e.g., HPACK [HPACK] or QPACK [QPACK], and the TTRP
+   compression (e.g., HPACK [HPACK] or QPACK [QPACK]), and the TTRP
    multiplexes more than one client's requests into that connection, the
    size and variation of Client-Cert and Client-Cert-Chain field values
    can reduce compression efficiency significantly.  An origin could
