@@ -6,7 +6,7 @@ HTTP                                                            R. Polli
 Internet-Draft                         Team Digitale, Italian Government
 Obsoletes: 3230 (if approved)                                  L. Pardue
 Intended status: Standards Track                              Cloudflare
-Expires: 12 May 2023                                     8 November 2022
+Expires: 14 May 2023                                    10 November 2022
 
 
                              Digest Fields
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 May 2023.
+   This Internet-Draft will expire on 14 May 2023.
 
 Copyright Notice
 
@@ -248,10 +248,10 @@ Table of Contents
 
    Experience has shown that implementations of [RFC3230] have
    interpreted the meaning of "instance" inconsistently, leading to
-   interoperability issues.  The most common mistake being the
-   calculation of the digest using (what we now call) message content,
-   rather than using (what we now call) representation data as was
-   originally intended.  Interestingly, time has also shown that a
+   interoperability issues.  The most common issue relates to the
+   mistake of calculating the digest using (what we now call) message
+   content, rather than using (what we now call) representation data as
+   was originally intended.  Interestingly, time has also shown that a
    digest of message content can be beneficial for some use cases.  So
    it is difficult to detect if non-conformance to [RFC3230] is
    intentional or unintentional.

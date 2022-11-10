@@ -1044,7 +1044,7 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Campbell &amp; Bishop</td>
-<td class="center">Expires 12 May 2023</td>
+<td class="center">Expires 14 May 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1057,12 +1057,12 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-httpbis-client-cert-field-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-11-08" class="published">8 November 2022</time>
+<time datetime="2022-11-10" class="published">10 November 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-05-12">12 May 2023</time></dd>
+<dd class="expires"><time datetime="2023-05-14">14 May 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1119,7 +1119,7 @@ predictable manner.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 12 May 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 14 May 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1566,7 +1566,10 @@ ways, which will vary based on specific deployments. The communication between a
 TTRP and backend or origin server, for example, might be authenticated in some
 way with the insertion and consumption of the <code>Client-Cert</code>
 and <code>Client-Cert-Chain</code> header fields occurring
-only on that connection. Alternatively the network topology might dictate a
+only on that connection.
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-13#appendix-B.3" class="relref">Appendix B.3</a> of [<a href="#I-D.ietf-httpbis-message-signatures" class="cite xref">HTTPSIG</a>]</span> gives one example of
+this with an application of HTTP Message Signatures.
+Alternatively the network topology might dictate a
 private network such that the backend application is only able to accept
 requests from the TTRP and the proxy can only make requests to that server.
 Other deployments that meet the requirements set forth herein are also possible.<a href="#section-4-5" class="pilcrow">¶</a></p>
@@ -1654,6 +1657,10 @@ Name Registry" defined by HTTP Semantics <span>[<a href="#RFC9110" class="cite x
 <dt id="RFC9114">[HTTP/3]</dt>
         <dd>
 <span class="refAuthor">Bishop, M., Ed.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="seriesInfo">RFC 9114</span>, <span class="seriesInfo">DOI 10.17487/RFC9114</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9114">https://www.rfc-editor.org/rfc/rfc9114</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-httpbis-message-signatures">[HTTPSIG]</dt>
+        <dd>
+<span class="refAuthor">Backman, A.</span>, <span class="refAuthor">Richer, J.</span>, and <span class="refAuthor">M. Sporny</span>, <span class="refTitle">"HTTP Message Signatures"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-message-signatures-13</span>, <time datetime="2022-09-26" class="refDate">26 September 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-13">https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-13</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="TLS">[TLS]</dt>
         <dd>
@@ -1829,7 +1836,7 @@ could inject its own values that would appear to the backend to
 have come from the TTRP. Although numerous other methods of detecting/preventing
 field injection are possible; such as the use of a unique secret value as part
 of the field name or value or the application of a signature, HMAC, or AEAD,
-there is no common general standardized mechanism. The potential problem of
+there is no common general mechanism. The potential problem of
 client field injection is not at all unique to the functionality of this draft,
 and it would therefore be inappropriate for this draft to define a one-off
 solution. In the absence of a generic standardized solution existing currently,

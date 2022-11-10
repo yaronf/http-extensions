@@ -47,21 +47,6 @@ View [saved issues](issues.html), or the latest GitHub [issues](https://github.c
 | [HTTP Message Signatures](signature-wglc-comments/draft-ietf-httpbis-message-signatures.html "HTTP Message Signatures (HTML)") | [plain text](signature-wglc-comments/draft-ietf-httpbis-message-signatures.txt "HTTP Message Signatures (Text)") | [diff with main](https://www.ietf.org/rfcdiff?url1=https://httpwg.github.io/http-extensions/draft-ietf-httpbis-message-signatures.txt&url2=https://httpwg.github.io/http-extensions/signature-wglc-comments/draft-ietf-httpbis-message-signatures.txt) |
 | [Cookies: HTTP State Management Mechanism](signature-wglc-comments/draft-ietf-httpbis-rfc6265bis.html "Cookies: HTTP State Management Mechanism (HTML)") | [plain text](signature-wglc-comments/draft-ietf-httpbis-rfc6265bis.txt "Cookies: HTTP State Management Mechanism (Text)") | same as main |
 
-## Preview for branch [digest-typo](digest-typo)
-
-| Draft |     |     |     |
-| ----- | --- | --- | --- |
-| [HTTP Representation Variants](digest-typo/draft-ietf-httpbis-variants.html "HTTP Representation Variants (HTML)") | [plain text](digest-typo/draft-ietf-httpbis-variants.txt "HTTP Representation Variants (Text)") | same as main |
-| [Client-Cert Header](digest-typo/draft-ietf-httpbis-client-cert-field.html "Client-Cert HTTP Header Field (HTML)") | [plain text](digest-typo/draft-ietf-httpbis-client-cert-field.txt "Client-Cert HTTP Header Field (Text)") | same as main |
-| [Resumable Uploads](digest-typo/draft-ietf-httpbis-resumable-upload.html "tus - Resumable Uploads Protocol (HTML)") | [plain text](digest-typo/draft-ietf-httpbis-resumable-upload.txt "tus - Resumable Uploads Protocol (Text)") | same as main |
-| [Retrofit Structured Fields](digest-typo/draft-ietf-httpbis-retrofit.html "Retrofit Structured Fields for HTTP (HTML)") | [plain text](digest-typo/draft-ietf-httpbis-retrofit.txt "Retrofit Structured Fields for HTTP (Text)") | same as main |
-| [Digest Fields](digest-typo/draft-ietf-httpbis-digest-headers.html "Digest Fields (HTML)") | [plain text](digest-typo/draft-ietf-httpbis-digest-headers.txt "Digest Fields (Text)") | [diff with main](https://www.ietf.org/rfcdiff?url1=https://httpwg.github.io/http-extensions/draft-ietf-httpbis-digest-headers.txt&url2=https://httpwg.github.io/http-extensions/digest-typo/draft-ietf-httpbis-digest-headers.txt) |
-| [HTTP Alternative Services](digest-typo/draft-ietf-httpbis-rfc7838bis.html "HTTP Alternative Services (HTML)") | [plain text](digest-typo/draft-ietf-httpbis-rfc7838bis.txt "HTTP Alternative Services (Text)") | same as main |
-| [ORIGIN in HTTP/3](digest-typo/draft-ietf-httpbis-origin-h3.html "The ORIGIN Extension in HTTP/3 (HTML)") | [plain text](digest-typo/draft-ietf-httpbis-origin-h3.txt "The ORIGIN Extension in HTTP/3 (Text)") | same as main |
-| [The HTTP QUERY Method](digest-typo/draft-ietf-httpbis-safe-method-w-body.html "The HTTP QUERY Method (HTML)") | [plain text](digest-typo/draft-ietf-httpbis-safe-method-w-body.txt "The HTTP QUERY Method (Text)") | same as main |
-| [HTTP Message Signatures](digest-typo/draft-ietf-httpbis-message-signatures.html "HTTP Message Signatures (HTML)") | [plain text](digest-typo/draft-ietf-httpbis-message-signatures.txt "HTTP Message Signatures (Text)") | same as main |
-| [Cookies: HTTP State Management Mechanism](digest-typo/draft-ietf-httpbis-rfc6265bis.html "Cookies: HTTP State Management Mechanism (HTML)") | [plain text](digest-typo/draft-ietf-httpbis-rfc6265bis.txt "Cookies: HTTP State Management Mechanism (Text)") | same as main |
-
 ## Preview for branch [cert](cert)
 
 ## Preview for branch [cert/yoda](cert/yoda)
@@ -143,6 +128,22 @@ View [saved issues](issues.html), or the latest GitHub [issues](https://github.c
 | [The HTTP QUERY Method](cert/dangling/draft-ietf-httpbis-safe-method-w-body.html "The HTTP QUERY Method (HTML)") | [plain text](cert/dangling/draft-ietf-httpbis-safe-method-w-body.txt "The HTTP QUERY Method (Text)") | same as main |
 | [HTTP Message Signatures](cert/dangling/draft-ietf-httpbis-message-signatures.html "HTTP Message Signatures (HTML)") | [plain text](cert/dangling/draft-ietf-httpbis-message-signatures.txt "HTTP Message Signatures (Text)") | same as main |
 | [Cookies: HTTP State Management Mechanism](cert/dangling/draft-ietf-httpbis-rfc6265bis.html "Cookies: HTTP State Management Mechanism (HTML)") | [plain text](cert/dangling/draft-ietf-httpbis-rfc6265bis.txt "Cookies: HTTP State Management Mechanism (Text)") | same as main |
+
+## Preview for branch [cert/mention-httpsig](cert/mention-httpsig)
+
+| Draft |     |     |     |
+| ----- | --- | --- | --- |
+| [HTTP Representation Variants](cert/mention-httpsig/draft-ietf-httpbis-variants.html "HTTP Representation Variants (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-variants.txt "HTTP Representation Variants (Text)") | same as main |
+| [Structured Field Values for HTTP](cert/mention-httpsig/draft-ietf-httpbis-sfbis.html "Structured Field Values for HTTP (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-sfbis.txt "Structured Field Values for HTTP (Text)") | [diff with main](https://www.ietf.org/rfcdiff?url1=https://httpwg.github.io/http-extensions/draft-ietf-httpbis-sfbis.txt&url2=https://httpwg.github.io/http-extensions/cert/mention-httpsig/draft-ietf-httpbis-sfbis.txt) |
+| [Client-Cert Header](cert/mention-httpsig/draft-ietf-httpbis-client-cert-field.html "Client-Cert HTTP Header Field (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-client-cert-field.txt "Client-Cert HTTP Header Field (Text)") | [diff with main](https://www.ietf.org/rfcdiff?url1=https://httpwg.github.io/http-extensions/draft-ietf-httpbis-client-cert-field.txt&url2=https://httpwg.github.io/http-extensions/cert/mention-httpsig/draft-ietf-httpbis-client-cert-field.txt) |
+| [Resumable Uploads](cert/mention-httpsig/draft-ietf-httpbis-resumable-upload.html "tus - Resumable Uploads Protocol (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-resumable-upload.txt "tus - Resumable Uploads Protocol (Text)") | same as main |
+| [Retrofit Structured Fields](cert/mention-httpsig/draft-ietf-httpbis-retrofit.html "Retrofit Structured Fields for HTTP (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-retrofit.txt "Retrofit Structured Fields for HTTP (Text)") | same as main |
+| [Digest Fields](cert/mention-httpsig/draft-ietf-httpbis-digest-headers.html "Digest Fields (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-digest-headers.txt "Digest Fields (Text)") | [diff with main](https://www.ietf.org/rfcdiff?url1=https://httpwg.github.io/http-extensions/draft-ietf-httpbis-digest-headers.txt&url2=https://httpwg.github.io/http-extensions/cert/mention-httpsig/draft-ietf-httpbis-digest-headers.txt) |
+| [HTTP Alternative Services](cert/mention-httpsig/draft-ietf-httpbis-rfc7838bis.html "HTTP Alternative Services (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-rfc7838bis.txt "HTTP Alternative Services (Text)") | same as main |
+| [ORIGIN in HTTP/3](cert/mention-httpsig/draft-ietf-httpbis-origin-h3.html "The ORIGIN Extension in HTTP/3 (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-origin-h3.txt "The ORIGIN Extension in HTTP/3 (Text)") | same as main |
+| [The HTTP QUERY Method](cert/mention-httpsig/draft-ietf-httpbis-safe-method-w-body.html "The HTTP QUERY Method (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-safe-method-w-body.txt "The HTTP QUERY Method (Text)") | same as main |
+| [HTTP Message Signatures](cert/mention-httpsig/draft-ietf-httpbis-message-signatures.html "HTTP Message Signatures (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-message-signatures.txt "HTTP Message Signatures (Text)") | same as main |
+| [Cookies: HTTP State Management Mechanism](cert/mention-httpsig/draft-ietf-httpbis-rfc6265bis.html "Cookies: HTTP State Management Mechanism (HTML)") | [plain text](cert/mention-httpsig/draft-ietf-httpbis-rfc6265bis.txt "Cookies: HTTP State Management Mechanism (Text)") | same as main |
 
 ## Preview for branch [cert/today](cert/today)
 
