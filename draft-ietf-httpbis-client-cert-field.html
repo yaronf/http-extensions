@@ -1309,7 +1309,9 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         <h3 id="name-terminology-and-applicabili">
 <a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-terminology-and-applicabili" class="section-name selfRef">Terminology and Applicability</a>
         </h3>
-<p id="section-1.2-1">Phrases like TLS client certificate authentication or mutually-authenticated TLS
+<p id="section-1.2-1">This document uses the following terminology from <span><a href="https://rfc-editor.org/rfc/rfc8941#section-3" class="relref">Section 3</a> of [<a href="#RFC8941" class="cite xref">STRUCTURED-FIELDS</a>]</span>
+to specify syntax and parsing: List and Byte Sequence.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.2-2">Phrases like TLS client certificate authentication or mutually-authenticated TLS
 are used throughout this document to refer to the process whereby, in addition
 to the normal TLS server authentication with a certificate, a client presents
 its X.509 certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> and proves possession of the corresponding
@@ -1317,8 +1319,8 @@ private key to a server when negotiating a TLS connection or the resumption of
 such a connection.  In contemporary versions of TLS <span>[<a href="#TLS" class="cite xref">TLS</a>]</span>
           <span>[<a href="#TLS1.2" class="cite xref">TLS1.2</a>]</span> this requires that the client send the Certificate and
 CertificateVerify messages during the handshake and for the server to verify the
-CertificateVerify and Finished messages.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
-<p id="section-1.2-2">HTTP/2 restricts TLS 1.2 renegotiation (<span><a href="https://rfc-editor.org/rfc/rfc9113#section-9.2.1" class="relref">Section 9.2.1</a> of [<a href="#RFC9113" class="cite xref">HTTP/2</a>]</span>) and
+CertificateVerify and Finished messages.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+<p id="section-1.2-3">HTTP/2 restricts TLS 1.2 renegotiation (<span><a href="https://rfc-editor.org/rfc/rfc9113#section-9.2.1" class="relref">Section 9.2.1</a> of [<a href="#RFC9113" class="cite xref">HTTP/2</a>]</span>) and
 prohibits TLS 1.3 post-handshake authentication <span>[<a href="#RFC8740" class="cite xref">RFC8740</a>]</span>. However, they are
 sometimes used to implement reactive client certificate authentication in HTTP/1.1
 <span>[<a href="#RFC9112" class="cite xref">HTTP/1.1</a>]</span> where the server decides whether to request a client certificate
@@ -1329,7 +1331,7 @@ document. With post-handshake authentication there is also the possibility, thou
 unlikely in practice, of multiple certificates and certificate chains from the
 client on a connection, in which case only the certificate and chain
 of the last post-handshake authentication are to be utilized for the header
-fields described herein.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+fields described herein.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1362,7 +1364,7 @@ certificate provided by the client in the TLS handshake with the reverse proxy.<
         <h3 id="name-encoding">
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-encoding" class="section-name selfRef">Encoding</a>
         </h3>
-<p id="section-2.1-1">The headers in this document encode certificates as Structured Field Byte
+<p id="section-2.1-1">The headers in this document encode certificates as Byte
 Sequences (<span><a href="https://rfc-editor.org/rfc/rfc8941#section-3.3.5" class="relref">Section 3.3.5</a> of [<a href="#RFC8941" class="cite xref">STRUCTURED-FIELDS</a>]</span>) where the value of the binary data
 is a DER encoded <span>[<a href="#ITU.X690.1994" class="cite xref">ITU.X690.1994</a>]</span> X.509 certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.
 In effect, this means that the binary DER certificate is encoded using base64
@@ -1370,7 +1372,7 @@ In effect, this means that the binary DER certificate is encoded using base64
 and delimited with colons on either side.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.1-2">Note that certificates are often stored encoded in a textual format, such as
 the one described in <span><a href="https://rfc-editor.org/rfc/rfc7468#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC7468" class="cite xref">RFC7468</a>]</span>, which is already nearly
-compatible with a Structured Field Byte Sequence; if so, it will be sufficient to replace
+compatible with a Byte Sequence; if so, it will be sufficient to replace
 <code>---(BEGIN|END) CERTIFICATE---</code> with <code>:</code> and remove line breaks in order
 to generate an appropriate item.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
 </section>
@@ -1384,19 +1386,13 @@ to generate an appropriate item.<a href="#section-2.1-2" class="pilcrow">¶</a><
 makes the TLS client certificate available to the backend application with the
 Client-Cert HTTP header field. This field contains the end-entity certificate
 used by the client in the TLS handshake.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.2-2">Client-Cert is an Item Structured Header <span>[<a href="#RFC8941" class="cite xref">STRUCTURED-FIELDS</a>]</span>.  Its value <span class="bcp14">MUST</span> be a
-Byte Sequence (<span><a href="https://rfc-editor.org/rfc/rfc8941#section-3.3.5" class="relref">Section 3.3.5</a> of [<a href="#RFC8941" class="cite xref">STRUCTURED-FIELDS</a>]</span>).  Its ABNF is:<a href="#section-2.2-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-2.2-3">
-<pre>
- Client-Cert = sf-binary
-</pre><a href="#section-2.2-3" class="pilcrow">¶</a>
-</div>
-<p id="section-2.2-4">The value of the header is encoded as described in <a href="#encoding" class="auto internal xref">Section 2.1</a>.<a href="#section-2.2-4" class="pilcrow">¶</a></p>
-<p id="section-2.2-5">The <code>Client-Cert</code> header field is only for use in HTTP requests and <span class="bcp14">MUST NOT</span> be
+<p id="section-2.2-2">Client-Cert is a Byte Sequence with the value of
+the header encoded as described in <a href="#encoding" class="auto internal xref">Section 2.1</a>.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.2-3">The <code>Client-Cert</code> header field is only for use in HTTP requests and <span class="bcp14">MUST NOT</span> be
 used in HTTP responses.  It is a singleton header field value as defined in
 <span><a href="https://rfc-editor.org/rfc/rfc9110#section-5.5" class="relref">Section 5.5</a> of [<a href="#RFC9110" class="cite xref">HTTP</a>]</span>, which <span class="bcp14">MUST NOT</span> have a list of values or occur
-multiple times in a request.<a href="#section-2.2-5" class="pilcrow">¶</a></p>
-<p id="section-2.2-6"><a href="#example-header" class="auto internal xref">Figure 2</a> in <a href="#example" class="auto internal xref">Appendix A</a> has an example of the <code>Client-Cert</code> header field.<a href="#section-2.2-6" class="pilcrow">¶</a></p>
+multiple times in a request.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.2-4"><a href="#example-header" class="auto internal xref">Figure 2</a> in <a href="#example" class="auto internal xref">Appendix A</a> has an example of the <code>Client-Cert</code> header field.<a href="#section-2.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="chain-header">
@@ -1408,19 +1404,13 @@ multiple times in a request.<a href="#section-2.2-5" class="pilcrow">¶</a></p>
 <span class="bcp14">MAY</span> make the certificate chain
 available to the backend application with the Client-Cert-Chain HTTP header
 field.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
-<p id="section-2.3-2">Client-Cert-Chain is a List Structured Header <span>[<a href="#RFC8941" class="cite xref">STRUCTURED-FIELDS</a>]</span>.  Each item in the
-list <span class="bcp14">MUST</span> be a Byte Sequence (<span><a href="https://rfc-editor.org/rfc/rfc8941#section-3.3.5" class="relref">Section 3.3.5</a> of [<a href="#RFC8941" class="cite xref">STRUCTURED-FIELDS</a>]</span>) encoded as described
-in <a href="#encoding" class="auto internal xref">Section 2.1</a>. The order is the same as the ordering in TLS (such as described in <span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.4.2" class="relref">Section 4.4.2</a> of [<a href="#TLS" class="cite xref">TLS</a>]</span>).<a href="#section-2.3-2" class="pilcrow">¶</a></p>
-<p id="section-2.3-3">The header's ABNF is:<a href="#section-2.3-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-2.3-4">
-<pre>
- Client-Cert-Chain = sf-list
-</pre><a href="#section-2.3-4" class="pilcrow">¶</a>
-</div>
-<p id="section-2.3-5">The <code>Client-Cert-Chain</code> header field is only for use in HTTP requests and <span class="bcp14">MUST NOT</span> be used in HTTP responses.  It <span class="bcp14">MAY</span> have a list of values or occur multiple
+<p id="section-2.3-2">Client-Cert-Chain is a List (<span><a href="https://rfc-editor.org/rfc/rfc8941#section-3.3.1" class="relref">Section 3.3.1</a> of [<a href="#RFC8941" class="cite xref">STRUCTURED-FIELDS</a>]</span>).  Each item in the
+list <span class="bcp14">MUST</span> be a Byte Sequence encoded as described in <a href="#encoding" class="auto internal xref">Section 2.1</a>. The order
+is the same as the ordering in TLS (such as described in <span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.4.2" class="relref">Section 4.4.2</a> of [<a href="#TLS" class="cite xref">TLS</a>]</span>).<a href="#section-2.3-2" class="pilcrow">¶</a></p>
+<p id="section-2.3-3">The <code>Client-Cert-Chain</code> header field is only for use in HTTP requests and <span class="bcp14">MUST NOT</span> be used in HTTP responses.  It <span class="bcp14">MAY</span> have a list of values or occur multiple
 times in a request.  For header compression purposes, it might be advantageous
-to split lists into multiple instances.<a href="#section-2.3-5" class="pilcrow">¶</a></p>
-<p id="section-2.3-6"><a href="#example-chain-header" class="auto internal xref">Figure 3</a> in <a href="#example" class="auto internal xref">Appendix A</a> has an example of the <code>Client-Cert-Chain</code> header field.<a href="#section-2.3-6" class="pilcrow">¶</a></p>
+to split lists into multiple instances.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
+<p id="section-2.3-4"><a href="#example-chain-header" class="auto internal xref">Figure 3</a> in <a href="#example" class="auto internal xref">Appendix A</a> has an example of the <code>Client-Cert-Chain</code> header field.<a href="#section-2.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="processing-rules">
