@@ -5,8 +5,8 @@
 HTTP                                                         B. Campbell
 Internet-Draft                                             Ping Identity
 Intended status: Informational                            M. Bishop, Ed.
-Expires: 13 May 2023                                              Akamai
-                                                         9 November 2022
+Expires: 15 May 2023                                              Akamai
+                                                        11 November 2022
 
 
                      Client-Cert HTTP Header Field
@@ -14,7 +14,7 @@ Expires: 13 May 2023                                              Akamai
 
 Abstract
 
-   This document defines HTTP extension header fields that allow a TLS
+   This document describes HTTP extension header fields that allow a TLS
    terminating reverse proxy to convey the client certificate
    information of a mutually-authenticated TLS connection to the origin
    server in a common and predictable manner.
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 May 2023.
+   This Internet-Draft will expire on 15 May 2023.
 
 Copyright Notice
 
@@ -136,19 +136,19 @@ Table of Contents
    commonly occurring functionality could improve and simplify
    interoperability between independent implementations.
 
-   This document aspires to standardize two HTTP header fields, Client-
-   Cert and Client-Cert-Chain, which a TLS terminating reverse proxy
-   (TTRP) adds to requests sent to the backend origin servers.  The
-   Client-Cert field value contains the end-entity client certificate
-   from the mutually-authenticated TLS connection between the
-   originating client and the TTRP.  Optionally, the Client-Cert-Chain
-   field value contains the certificate chain used for validation of the
-   end-entity certificate.  This enables the backend origin server to
-   utilize the client certificate information in its application logic.
-   While there may be additional proxies or hops between the TTRP and
-   the origin server (potentially even with mutually-authenticated TLS
-   connections between them), the scope of the Client-Cert header field
-   is intentionally limited to exposing to the origin server the
+   This document describes two HTTP header fields, Client-Cert and
+   Client-Cert-Chain, which a TLS terminating reverse proxy (TTRP) adds
+   to requests sent to the backend origin servers.  The Client-Cert
+   field value contains the end-entity client certificate from the
+   mutually-authenticated TLS connection between the originating client
+   and the TTRP.  Optionally, the Client-Cert-Chain field value contains
+   the certificate chain used for validation of the end-entity
+   certificate.  This enables the backend origin server to utilize the
+   client certificate information in its application logic.  While there
+   may be additional proxies or hops between the TTRP and the origin
+   server (potentially even with mutually-authenticated TLS connections
+   between them), the scope of the Client-Cert header field is
+   intentionally limited to exposing to the origin server the
    certificate that was presented by the originating client in its
    connection to the TTRP.
 
