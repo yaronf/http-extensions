@@ -1557,7 +1557,10 @@ ways, which will vary based on specific deployments. The communication between a
 TTRP and backend or origin server, for example, might be authenticated in some
 way with the insertion and consumption of the <code>Client-Cert</code>
 and <code>Client-Cert-Chain</code> header fields occurring
-only on that connection. Alternatively the network topology might dictate a
+only on that connection.
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-13#appendix-B.3" class="relref">Appendix B.3</a> of [<a href="#I-D.ietf-httpbis-message-signatures" class="cite xref">HTTPSIG</a>]</span> gives one example of
+this with an application of HTTP Message Signatures.
+Alternatively the network topology might dictate a
 private network such that the backend application is only able to accept
 requests from the TTRP and the proxy can only make requests to that server.
 Other deployments that meet the requirements set forth herein are also possible.<a href="#section-4-5" class="pilcrow">¶</a></p>
@@ -1645,6 +1648,10 @@ Name Registry" defined by HTTP Semantics <span>[<a href="#RFC9110" class="cite x
 <dt id="RFC9114">[HTTP/3]</dt>
         <dd>
 <span class="refAuthor">Bishop, M., Ed.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="seriesInfo">RFC 9114</span>, <span class="seriesInfo">DOI 10.17487/RFC9114</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9114">https://www.rfc-editor.org/rfc/rfc9114</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-httpbis-message-signatures">[HTTPSIG]</dt>
+        <dd>
+<span class="refAuthor">Backman, A.</span>, <span class="refAuthor">Richer, J.</span>, and <span class="refAuthor">M. Sporny</span>, <span class="refTitle">"HTTP Message Signatures"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-message-signatures-13</span>, <time datetime="2022-09-26" class="refDate">26 September 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-13">https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-13</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="TLS">[TLS]</dt>
         <dd>
@@ -1821,10 +1828,10 @@ could inject its own values that would appear to the backend to
 have come from the TTRP. Although numerous other methods of detecting/preventing
 field injection are possible; such as the use of a unique secret value as part
 of the field name or value or the application of a signature, HMAC, or AEAD,
-there is no common general standardized mechanism. The potential problem of
+there is no common general mechanism. The potential problem of
 client field injection is not at all unique to the functionality of this draft,
 and it would therefore be inappropriate for this draft to define a one-off
-solution. In the absence of a generic standardized solution existing currently,
+solution. In the absence of a generic common solution existing currently,
 stripping/sanitizing the fields is the de facto means of protecting against
 field injection in practice. Sanitizing the fields is sufficient when
 properly implemented and is a normative requirement of <a href="#sec" class="auto internal xref">Section 4</a>.<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
