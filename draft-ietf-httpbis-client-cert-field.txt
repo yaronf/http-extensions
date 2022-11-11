@@ -241,6 +241,9 @@ Table of Contents
    value as defined in Section 5.5 of [HTTP], which MUST NOT have a list
    of values or occur multiple times in a request.
 
+   Figure 2 in Appendix A has an example of the Client-Cert header
+   field.
+
 2.3.  Client-Cert-Chain HTTP Header Field
 
    In the context of a TLS terminating reverse proxy deployment, the
@@ -262,6 +265,9 @@ Table of Contents
    or occur multiple times in a request.  For header compression
    purposes, it might be advantageous to split lists into multiple
    instances.
+
+   Figure 3 in Appendix A has an example of the Client-Cert-Chain header
+   field.
 
 2.4.  Processing Rules
 
