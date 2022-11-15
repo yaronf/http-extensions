@@ -5,8 +5,8 @@
 HTTP Working Group                                        M. Bishop, Ed.
 Internet-Draft                                       Akamai Technologies
 Intended status: Standards Track                         M. Thomson, Ed.
-Expires: 15 May 2023                                             Mozilla
-                                                        11 November 2022
+Expires: 19 May 2023                                             Mozilla
+                                                        15 November 2022
 
 
                        HTTP Alternative Services
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 May 2023.
+   This Internet-Draft will expire on 19 May 2023.
 
 Copyright Notice
 
@@ -921,9 +921,9 @@ Table of Contents
 
 10.2.  Informative References
 
-   [BCP90]    Klyne, G., Nottingham, M., and J. Mogul, "Registration
-              Procedures for Message Header Fields", BCP 90, RFC 3864,
-              September 2004.
+   [BCP90]    Klyne, G., Nottingham, M., Mogul, J., and RFC Publisher,
+              "Registration Procedures for Message Header Fields",
+              BCP 90, RFC 3864, September 2004.
 
               <https://www.rfc-editor.org/info/bcp90>
 

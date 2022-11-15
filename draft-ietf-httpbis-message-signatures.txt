@@ -5,10 +5,10 @@
 HTTP                                                     A. Backman, Ed.
 Internet-Draft                                                    Amazon
 Intended status: Standards Track                          J. Richer, Ed.
-Expires: 15 May 2023                                 Bespoke Engineering
+Expires: 19 May 2023                                 Bespoke Engineering
                                                                M. Sporny
                                                           Digital Bazaar
-                                                        11 November 2022
+                                                        15 November 2022
 
 
                         HTTP Message Signatures
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 May 2023.
+   This Internet-Draft will expire on 19 May 2023.
 
 Copyright Notice
 
@@ -84,6 +84,7 @@ Table of Contents
        2.1.1.  Strict Serialization of HTTP Structured Fields
        2.1.2.  Dictionary Structured Field Members
        2.1.3.  Binary-wrapped HTTP Fields
+       2.1.4.  Trailer Fields
      2.2.  Derived Components
        2.2.1.  Method
        2.2.2.  Target URI
@@ -117,18 +118,19 @@ Table of Contents
      5.1.  The Accept-Signature Field
      5.2.  Processing an Accept-Signature
    6.  IANA Considerations
-     6.1.  HTTP Signature Algorithms Registry
-       6.1.1.  Registration Template
-       6.1.2.  Initial Contents
-     6.2.  HTTP Signature Metadata Parameters Registry
+     6.1.  HTTP Field Name Registration
+     6.2.  HTTP Signature Algorithms Registry
        6.2.1.  Registration Template
        6.2.2.  Initial Contents
-     6.3.  HTTP Signature Derived Component Names Registry
+     6.3.  HTTP Signature Metadata Parameters Registry
        6.3.1.  Registration Template
        6.3.2.  Initial Contents
-     6.4.  HTTP Signature Component Parameters Registry
+     6.4.  HTTP Signature Derived Component Names Registry
        6.4.1.  Registration Template
        6.4.2.  Initial Contents
+     6.5.  HTTP Signature Component Parameters Registry
+       6.5.1.  Registration Template
+       6.5.2.  Initial Contents
    7.  Security Considerations
      7.1.  General Considerations
        7.1.1.  Skipping Signature Verification
@@ -254,7 +256,8 @@ Table of Contents
 
    The terms "HTTP message", "HTTP request", "HTTP response", "target
    URI", "gateway", "header field", "intermediary", "request target",
-   "sender", "method", and "recipient" are used as defined in [HTTP].
+   "trailer field", "sender", "method", and "recipient" are used as
+   defined in [HTTP].
 
    For brevity, the term "signature" on its own is used in this document
    to refer to both digital signatures (which use asymmetric
@@ -404,22 +407,22 @@ Table of Contents
    list of transformations that could occur under HTTP, provided as
    context:
 
-   *  Re-ordering of header fields with different header field names
-      (Section 5.3 of [HTTP]).
+   *  Re-ordering of fields with different field names (Section 5.3 of
+      [HTTP]).
 
    *  Combination of fields with the same field name (Section 5.2 of
       [HTTP]).
 
-   *  Removal of header fields listed in the Connection header field
+   *  Removal of fields listed in the Connection header field
       (Section 7.6.1 of [HTTP]).
 
-   *  Addition of header fields that indicate control options
-      (Section 7.6.1 of [HTTP]).
+   *  Addition of fields that indicate control options (Section 7.6.1 of
+      [HTTP]).
 
    *  Addition or removal of a transfer coding (Section 7.7 of [HTTP]).
 
-   *  Addition of header fields such as Via (Section 7.6.3 of [HTTP])
-      and Forwarded (Section 4 of [RFC7239]).
+   *  Addition of fields such as Via (Section 7.6.3 of [HTTP]) and
+      Forwarded (Section 4 of [RFC7239]).
 
    *  Conversion between different versions of the HTTP protocol (e.g.,
       HTTP/1.x to HTTP/2, or vice-versa).
@@ -461,7 +464,7 @@ Table of Contents
       be covered to protect the authorization credentials and mandate
       the signature parameters contain a created parameter, while an API
       expecting semantically relevant HTTP message content could require
-      the Content-Digest header defined in [DIGEST] to be present and
+      the Content-Digest field defined in [DIGEST] to be present and
       covered as well as mandate a value for tag that is specific to the
       API being protected.
 
@@ -528,7 +531,7 @@ Table of Contents
    an HTTP field name (Section 2.1) or a registered derived component
    name (Section 2.2).  The possible parameters for a component
    identifier are dependent on the component identifier, and a registry
-   cataloging all possible parameters is defined in Section 6.2.
+   cataloging all possible parameters is defined in Section 6.3.
 
    Within a single list of covered components, each component identifier
    MUST occur only once.  One component identifier is distinct from
@@ -562,30 +565,60 @@ Table of Contents
 2.1.  HTTP Fields
 
    The component name for an HTTP field is the lowercased form of its
-   field name.  While HTTP field names are case-insensitive,
-   implementations MUST use lowercased field names (e.g., content-type,
-   date, etag) when using them as component names.
+   field name as defined in Section 5.1 of [HTTP].  While HTTP field
+   names are case-insensitive, implementations MUST use lowercased field
+   names (e.g., content-type, date, etag) when using them as component
+   names.
 
-   Unless overridden by additional parameters and rules, the HTTP field
-   value MUST be canonicalized as a single combined value as defined in
-   Section 5.2 of [HTTP].  Note that some HTTP fields, such as Set-
-   Cookie [COOKIE], do not follow a syntax that allows for combination
-   of field values in this manner such that the combined output is
-   unambiguous from multiple inputs.  However, the canonicalized
-   component value is never parsed by the message signature process;
-   instead, it is merely used as part of the signature base in
-   Section 2.5.  Even so, caution needs to be taken when including such
-   fields in signatures, and the bs parameter defined in Section 2.1.3
-   provides a method for wrapping such problematic fields.  See
-   Section 7.5.6 for more discussion of this issue.
+   The component value for an HTTP field is the field value for the
+   named field as defined in Section 5.5 of [HTTP].  The field value
+   MUST be taken from the named header field of the target message
+   unless this behavior is overridden by additional parameters and
+   rules, such as the req and tr flags, below.
 
-   If the combined value is not available for a given field by an
-   implementation, the following algorithm will produce canonicalized
-   results for an implementation:
+   Unless overridden by additional parameters and rules, HTTP field
+   values MUST be combined into a single value as defined in Section 5.2
+   of [HTTP] to create the component value.  Specifically, HTTP fields
+   sent as multiple fields MUST be combined using a single comma (",")
+   and a single space (" ") between each item.  Note that intermediaries
+   are allowed to combine values of HTTP fields with any amount of
+   whitespace between the commas, and if this behavior is not accounted
+   for by the verifier, the signature can fail since the signer and
+   verifier will be see a different component value in their respective
+   signature bases.  For robustness, it is RECOMMENDED that signed
+   messages include only a single instance of any field covered under
+   the signature, particularly with the value for any list-based fields
+   serialized using the algorithm below.  This approach increases the
+   chances of the field value remaining untouched through
+   intermediaries.  Where that approach is not possible and multiple
+   instances of a field need to be sent separately, it is RECOMMENDED
+   that signers and verifiers process any list-based fields by parsing
+   out individual field values and combining them based on the strict
+   algorithm below, to counter possible intermediary behavior.  When the
+   field in question is a structured field of tyle List or Dictionary,
+   this effect can be accomplished more directly by using the strict
+   structured field serialization of the field value, as described in
+   Section 2.1.1.
+
+   Note that some HTTP fields, such as Set-Cookie [COOKIE], do not
+   follow a syntax that allows for combination of field values in this
+   manner (such that the combined output is unambiguous from multiple
+   inputs).  Even though the component value is never parsed by the
+   message signature process and used only as part of the signature base
+   in Section 2.5, caution needs to be taken when including such fields
+   in signatures since the combined value could be ambiguous.  The bs
+   parameter defined in Section 2.1.3 provides a method for wrapping
+   such problematic fields.  See Section 7.5.6 for more discussion of
+   this issue.
+
+   If the correctly combined value is not directly available for a given
+   field by an implementation, the following algorithm will produce
+   canonicalized results for list-based fields:
 
    1.  Create an ordered list of the field values of each instance of
        the field in the message, in the order that they occur (or will
-       occur) in the message.
+       occur) in the message.  If necessary, separate individual values
+       found in a field instance.
 
    2.  Strip leading and trailing whitespace from each item in the list.
        Note that since HTTP field values are not allowed to contain
@@ -601,17 +634,17 @@ Table of Contents
    4.  Concatenate the list of values together with a single comma (",")
        and a single space (" ") between each item.
 
-   The resulting string is the canonicalized component value for the
-   field.
+   The resulting string is the component value for the field.
 
    Note that some HTTP fields have values with multiple valid
-   serializations that have equivalent semantics.  Applications signing
-   and processing such fields MUST consider how to handle the values of
-   such fields to ensure that the signer and verifier can derive the
-   same value, as discussed in Section 7.5.2.
+   serializations that have equivalent semantics, such as allow case-
+   insensitive values that intermediaries could change.  Applications
+   signing and processing such fields MUST consider how to handle the
+   values of such fields to ensure that the signer and verifier can
+   derive the same value, as discussed in Section 7.5.2.
 
-   Following are non-normative examples of canonicalized values for
-   header fields, given the following example HTTP message fragment:
+   Following are non-normative examples of component values for header
+   fields, given the following example HTTP message fragment:
 
    Host: www.example.com
    Date: Tue, 20 Apr 2021 02:07:56 GMT
@@ -622,9 +655,9 @@ Table of Contents
    Cache-Control:    must-revalidate
    Example-Dict:  a=1,    b=2;x=1;y=2,   c=(a   b   c)
 
-   The following example shows canonicalized values for these example
-   header fields, presented using the signature base format discussed in
-   Section 2.5:
+   The following example shows the component values for these example
+   header fields, presented using the signature base format defined in
+   in Section 2.5:
 
    "host": www.example.com
    "date": Tue, 20 Apr 2021 02:07:56 GMT
@@ -633,9 +666,9 @@ Table of Contents
    "cache-control": max-age=60, must-revalidate
    "example-dict": a=1,    b=2;x=1;y=2,   c=(a   b   c)
 
-   Since empty HTTP header fields are allowed, they can also be signed
-   when present in a message.  The canonicalized value is the empty
-   string.  This means that the following empty header:
+   Since empty HTTP fields are allowed, they can also be signed when
+   present in a message.  The canonicalized value is the empty string.
+   This means that the following empty header:
 
    NOTE: '\' line wrapping per RFC 8792
 
@@ -649,9 +682,9 @@ Table of Contents
 
    "x-empty-header": \
 
-   Note: these are shown here using the line wrapping algorithm in
-   [RFC8792] due to limitations in the document format that strips
-   trailing spaces from diagrams.
+   Note: the trailing spaces in these values are shown here using the
+   line wrapping algorithm in [RFC8792] due to limitations in the
+   document format that strips trailing spaces from diagrams.
 
    Any HTTP field component identifiers MAY have the following
    parameters in specific circumstances, each described in detail in
@@ -674,6 +707,11 @@ Table of Contents
       that this parameter can also be applied to any derived component
       identifiers that target the request.  Section 2.4
 
+   tr  A boolean flag indicating that the field value is taken from the
+      trailers of the message as defined in Section 6.5 of [HTTP].  If
+      this flag is absent, the field value is taken from the headers of
+      the message as defined in Section 6.3 of [HTTP].  Section 2.1.4
+
    Multiple parameters MAY be specified together, though some
    combinations are redundant or incompatible.  For example, the sf
    parameter's functionality is already covered when the key parameter
@@ -684,7 +722,7 @@ Table of Contents
    values after combination.
 
    Additional parameters can be defined in the registry established in
-   Section 6.2.
+   Section 6.3.
 
 2.1.1.  Strict Serialization of HTTP Structured Fields
 
@@ -833,6 +871,36 @@ Table of Contents
    This component value is distinct from the multiple-instance field
    above, preventing a collision which could potentially be exploited.
 
+2.1.4.  Trailer Fields
+
+   If the signer wants to include a trailer field in the signature, the
+   signer MUST include the tr boolean parameter to indicate the value
+   MUST be taken from the trailer fields and not from the header fields.
+
+   For example, given the following message:
+
+   ```http-message HTTP/1.1 200 OK Content-Type: text/plain Transfer-
+   Encoding: chunked Trailer: Expires
+
+   4 HTTP 7 Message 10 Signatures 0 Expires: Wed, 9 Nov 2022 07:28:00
+   GMT ```
+
+   The signer decides to add both the Trailer header field as well as
+   the Expires trailer to the signature base:
+
+   "@status": 200 "trailer": Expires "expires";tr: Wed, 9 Nov 2022
+   07:28:00 GMT
+
+   IF a field is available as both a header and trailer in a message,
+   both values MAY be signed separately.  The values of header fields
+   and trailer fields of the same name MUST NOT be combined.
+
+   Since trailer fields could be merged into the header fields or
+   dropped entirely by intermediaries as per Section 6.5.1 of [HTTP], it
+   is NOT RECOMMENDED to include trailers in the signature unless the
+   signer knows that the verifier will have access to the values of the
+   trailers as sent.
+
 2.2.  Derived Components
 
    In addition to HTTP fields, there are a number of different
@@ -873,7 +941,7 @@ Table of Contents
    @status  The status code for a response.  (Section 2.2.9).
 
    Additional derived component names are defined in the HTTP Signatures
-   Derived Component Name Registry.  (Section 6.3)
+   Derived Component Name Registry.  (Section 6.4)
 
    Derived component values are taken from the context of the target
    message for the signature.  This context includes information about
@@ -1065,11 +1133,12 @@ Table of Contents
 
    The @path derived component refers to the target path of the HTTP
    request message.  The component value is the absolute path of the
-   request target defined by [RFC3986], with no query component and no
+   request target defined by [URI], with no query component and no
    trailing ? character.  The value is normalized according to the rules
    in [HTTP], Section 4.2.3.  Namely, an empty path string is normalized
-   as a single slash / character, and path components are represented by
-   their values after decoding any percent-encoded octets.
+   as a single slash / character.  Path components are represented by
+   their values before decoding any percent-encoded octets, as described
+   in the simple string comparison rules in Section 6.2.1 of [URI].
 
    For example, the following request message:
 
@@ -1088,22 +1157,23 @@ Table of Contents
 
    The @query derived component refers to the query component of the
    HTTP request message.  The component value is the entire normalized
-   query string defined by [RFC3986], including the leading ? character.
-   The value is normalized according to the rules in [HTTP],
-   Section 4.2.3.  Namely, percent-encoded octets are decoded.
+   query string defined by [URI], including the leading ? character.
+   The value is read using the simple string comparison rules in
+   Section 6.2.1 of [URI].  Namely, percent-encoded octets are not
+   decoded.
 
    For example, the following request message:
 
-   POST /path?param=value&foo=bar&baz=batman HTTP/1.1
+   POST /path?param=value&foo=bar&baz=bat%2Dman HTTP/1.1
    Host: www.example.com
 
    Would result in the following @query component value:
 
-   ?param=value&foo=bar&baz=batman
+   ?param=value&foo=bar&baz=bat%2Dman
 
    And the following signature base line:
 
-   "@query": ?param=value&foo=bar&baz=batman
+   "@query": ?param=value&foo=bar&baz=bat%2Dman
 
    The following request message:
 
@@ -1140,13 +1210,13 @@ Table of Contents
    components.  Single named parameters MAY occur in any order in the
    covered components.
 
-   The component value of a single named parameter is the the
-   valueString of the named query parameter defined by HTMLURL,
-   Section 5.1 [HTMLURL], which is the value after percent-encoded
-   octets are decoded.  Note that this value does not include any
-   leading ? characters, equals sign =, or separating & characters.
-   Named query parameters with an empty valueString are included with an
-   empty string as the component value.
+   The component value of a single named parameter is the valueString of
+   the named query parameter defined by HTMLURL, Section 5.1 [HTMLURL],
+   which is the value after percent-encoded octets are decoded.  Note
+   that this value does not include any leading ? characters, equals
+   sign =, or separating & characters.  Named query parameters with an
+   empty valueString are included with an empty string as the component
+   value.
 
    If a query parameter is named as a covered component but it does not
    occur in the query parameters, this MUST cause an error in the
@@ -1157,8 +1227,8 @@ Table of Contents
    POST /path?param=value&foo=bar&baz=batman&qux= HTTP/1.1
    Host: www.example.com
 
-   Indicating the baz, qux and param named query parameters in would
-   result in the following @query-param component values:
+   Indicating the baz, qux and param named query parameters would result
+   in the following @query-param component values:
 
    _baz_: batman
 
@@ -1248,7 +1318,7 @@ Table of Contents
       signatures relevant for specific applications or protocols.
 
    Additional parameters can be defined in the HTTP Signature Parameters
-   Registry (Section 6.2.2).  Note that there is no general ordering to
+   Registry (Section 6.3.2).  Note that there is no general ordering to
    the parameters, but once an ordering is chosen for a given set of
    parameters, it cannot be changed without altering the signature
    parameters value.
@@ -1891,7 +1961,7 @@ Table of Contents
    alg defined in Section 2.3, by reference to the key material, or
    through mutual agreement between the signer and verifier.  Signature
    algorithms selected using the alg parameter MUST use values from the
-   HTTP Message Signature Algorithms Registry (Section 6.1).
+   HTTP Message Signature Algorithms Registry (Section 6.2).
 
 3.3.1.  RSASSA-PSS using SHA-512
 
@@ -2087,7 +2157,7 @@ Table of Contents
    Typically, the JWS algorithm can be signaled using JSON Web Keys or
    other mechanisms common to JOSE implementations.  In fact, and JWA
    algorithm values are not registered in the HTTP Message Signature
-   Algorithms Registry (Section 6.1), and so the explicit alg signature
+   Algorithms Registry (Section 6.2), and so the explicit alg signature
    parameter is not used at all when using JOSE signing algorithms.
 
 4.  Including a Message Signature in a Message
@@ -2421,18 +2491,35 @@ Table of Contents
 
 6.  IANA Considerations
 
-   IANA is requested to create three registries and to populate those
-   registries with initial values as described in this section.
+   IANA is asked to update one registry and create four new registries,
+   according to the following sections.
 
-6.1.  HTTP Signature Algorithms Registry
+6.1.  HTTP Field Name Registration
+
+   IANA is asked to update the "Hypertext Transfer Protocol (HTTP) Field
+   Name Registry" registry ([HTTP]) according to the table below:
+
+        +==================+===========+=========================+
+        | Field Name       | Status    | Reference               |
+        +==================+===========+=========================+
+        | Signature-Input  | permanent | Section 4.1 of RFC nnnn |
+        +------------------+-----------+-------------------------+
+        | Signature        | permanent | Section 4.2 of RFC nnnn |
+        +------------------+-----------+-------------------------+
+        | Accept-Signature | permanent | Section 5.1 of RFC nnnn |
+        +------------------+-----------+-------------------------+
+
+                                 Table 1
+
+6.2.  HTTP Signature Algorithms Registry
 
    This document defines HTTP Signature Algorithms, for which IANA is
    asked to create and maintain a new registry titled "HTTP Signature
    Algorithms".  Initial values for this registry are given in
-   Section 6.1.2.  Future assignments and modifications to existing
+   Section 6.2.2.  Future assignments and modifications to existing
    assignment are to be made through the Expert Review registration
    policy [RFC8126] and shall follow the template presented in
-   Section 6.1.1.
+   Section 6.2.1.
 
    Algorithms referenced by algorithm identifiers have to be fully
    defined with all parameters fixed.  Algorithm identifiers in this
@@ -2448,7 +2535,7 @@ Table of Contents
    Algorithms added to this registry MUST NOT be aliases for other
    entries in the registry.
 
-6.1.1.  Registration Template
+6.2.1.  Registration Template
 
    Algorithm Name:
       An identifier for the HTTP Signature Algorithm.  The name MUST be
@@ -2473,7 +2560,7 @@ Table of Contents
       the document(s).  An indication of the relevant sections may also
       be included but is not required.
 
-6.1.2.  Initial Contents
+6.2.2.  Initial Contents
 
     +===================+===================+========+===============+
     | Algorithm Name    | Description       | Status | Specification |
@@ -2501,10 +2588,10 @@ Table of Contents
     |                   | edwards25519      |        |               |
     +-------------------+-------------------+--------+---------------+
 
-        Table 1: Initial contents of the HTTP Signature Algorithms
+        Table 2: Initial contents of the HTTP Signature Algorithms
                                 Registry.
 
-6.2.  HTTP Signature Metadata Parameters Registry
+6.3.  HTTP Signature Metadata Parameters Registry
 
    This document defines the signature parameters structure in
    Section 2.3, which may have parameters containing metadata about a
@@ -2512,12 +2599,12 @@ Table of Contents
    registry titled "HTTP Signature Metadata Parameters" to record and
    maintain the set of parameters defined for use with member values in
    the signature parameters structure.  Initial values for this registry
-   are given in Section 6.2.2.  Future assignments and modifications to
+   are given in Section 6.3.2.  Future assignments and modifications to
    existing assignments are to be made through the Expert Review
    registration policy [RFC8126] and shall follow the template presented
-   in Section 6.2.1.
+   in Section 6.3.1.
 
-6.2.1.  Registration Template
+6.3.1.  Registration Template
 
    Name:
       An identifier for the HTTP signature metadata parameter.  The name
@@ -2536,7 +2623,7 @@ Table of Contents
       the document(s).  An indication of the relevant sections may also
       be included but is not required.
 
-6.2.2.  Initial Contents
+6.3.2.  Initial Contents
 
    The table below contains the initial contents of the HTTP Signature
    Metadata Parameters Registry.  Each row in the table represents a
@@ -2566,10 +2653,10 @@ Table of Contents
         |         | for a signature               | of RFC nnnn   |
         +---------+-------------------------------+---------------+
 
-              Table 2: Initial contents of the HTTP Signature
+              Table 3: Initial contents of the HTTP Signature
                        Metadata Parameters Registry.
 
-6.3.  HTTP Signature Derived Component Names Registry
+6.4.  HTTP Signature Derived Component Names Registry
 
    This document defines a method for canonicalizing HTTP message
    components, including components that can be derived from the context
@@ -2580,12 +2667,12 @@ Table of Contents
    asked to create and maintain a new registry typed "HTTP Signature
    Derived Component Names" to record and maintain the set of non-field
    component names and the methods to produce their associated component
-   values.  Initial values for this registry are given in Section 6.3.2.
+   values.  Initial values for this registry are given in Section 6.4.2.
    Future assignments and modifications to existing assignments are to
    be made through the Expert Review registration policy [RFC8126] and
-   shall follow the template presented in Section 6.3.1.
+   shall follow the template presented in Section 6.4.1.
 
-6.3.1.  Registration Template
+6.4.1.  Registration Template
 
    Name:
       A name for the HTTP derived component.  The name MUST begin with
@@ -2614,7 +2701,7 @@ Table of Contents
       the document(s).  An indication of the relevant sections may also
       be included but is not required.
 
-6.3.2.  Initial Contents
+6.4.2.  Initial Contents
 
    The table below contains the initial contents of the HTTP Signature
    Derived Component Names Registry.
@@ -2670,10 +2757,10 @@ Table of Contents
    |                   | response     |      |        |               |
    +-------------------+--------------+------+--------+---------------+
 
-         Table 3: Initial contents of the HTTP Signature Derived
+         Table 4: Initial contents of the HTTP Signature Derived
                         Component Names Registry.
 
-6.4.  HTTP Signature Component Parameters Registry
+6.5.  HTTP Signature Component Parameters Registry
 
    This document defines several kinds of component identifiers, some of
    which can be parameterized in specific circumstances to provide
@@ -2685,12 +2772,12 @@ Table of Contents
    targets to which they apply (such as specific field types, derived
    components, or contexts) and any incompatibilities with other
    parameters known at the time of definition.  Initial values for this
-   registry are given in Section 6.4.2.  Future assignments and
+   registry are given in Section 6.5.2.  Future assignments and
    modifications to existing assignments are to be made through the
    Expert Review registration policy [RFC8126] and shall follow the
-   template presented in Section 6.4.1.
+   template presented in Section 6.5.1.
 
-6.4.1.  Registration Template
+6.5.1.  Registration Template
 
    Name:
       A name for the parameter.  The name MUST be an ASCII string that
@@ -2713,7 +2800,7 @@ Table of Contents
       the document(s).  An indication of the relevant sections may also
       be included but is not required.
 
-6.4.2.  Initial Contents
+6.5.2.  Initial Contents
 
    The table below contains the initial contents of the HTTP Signature
    Derived Component Names Registry.
@@ -2731,6 +2818,9 @@ Table of Contents
      | bs   | Byte Sequence wrapping       | Active | Section 2.1.3 |
      |      | indicator                    |        | of RFC nnnn   |
      +------+------------------------------+--------+---------------+
+     | tr   | Trailer                      | Active | Section 2.1.4 |
+     |      |                              |        | of RFC nnnn   |
+     +------+------------------------------+--------+---------------+
      | req  | Related request indicator    | Active | Section 2.2.4 |
      |      |                              |        | of RFC nnnn   |
      +------+------------------------------+--------+---------------+
@@ -2738,7 +2828,7 @@ Table of Contents
      |      |                              |        | of RFC nnnn   |
      +------+------------------------------+--------+---------------+
 
-        Table 4: Initial contents of the HTTP Signature Component
+        Table 5: Initial contents of the HTTP Signature Component
                            Parameters Registry.
 
 7.  Security Considerations
@@ -3018,6 +3108,14 @@ Table of Contents
    covered by the signature directly, checking only the signature is not
    sufficient protection against such a substitution attack.
 
+   As discussed in [DIGEST], the value of the Content-Digest field is
+   dependent on the content encoding of the message.  If an intermediary
+   changes the content encoding, the resulting Content-Digest value
+   would change, which would in turn invalidate the signature.  Any
+   intermediary performing such an action would need to apply a new
+   signature with the updated Content-Digest field value, similar to the
+   reverse proxy use case discussed in Section 4.3.
+
 7.3.  Cryptographic Considerations
 
 7.3.1.  Cryptography and Signature Collision
@@ -3266,15 +3364,15 @@ Table of Contents
    @ character anywhere in the name.  As such, since all derived
    component names start with the @ character, these namespaces should
    be completely separate.  However, some HTTP implementations are not
-   sufficiently strict about the characters accepted in HTTP headers.
-   In such implementations, a sender (or attacker) could inject a header
-   field starting with an @ character and have it passed through to the
-   application code.  These invalid header fields could be used to
-   override a portion of the derived message content and substitute an
-   arbitrary value, providing a potential place for an attacker to mount
-   a signature collision (Section 7.3.1) attack or other functional
-   substitution attack (such as using the signature from a GET request
-   on a crafted POST request).
+   sufficiently strict about the characters accepted in HTTP field
+   names.  In such implementations, a sender (or attacker) could inject
+   a header field starting with an @ character and have it passed
+   through to the application code.  These invalid header fields could
+   be used to override a portion of the derived message content and
+   substitute an arbitrary value, providing a potential place for an
+   attacker to mount a signature collision (Section 7.3.1) attack or
+   other functional substitution attack (such as using the signature
+   from a GET request on a crafted POST request).
 
    To combat this, when selecting values for a message component, if the
    component name starts with the @ character, it needs to be processed
@@ -3573,11 +3671,6 @@ Table of Contents
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
-   [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
-              Resource Identifier (URI): Generic Syntax", STD 66,
-              RFC 3986, DOI 10.17487/RFC3986, January 2005,
-              <https://www.rfc-editor.org/rfc/rfc3986>.
-
    [RFC6234]  Eastlake 3rd, D. and T. Hansen, "US Secure Hash Algorithms
               (SHA and SHA-based HMAC and HKDF)", RFC 6234,
               DOI 10.17487/RFC6234, May 2011,
@@ -3615,15 +3708,20 @@ Table of Contents
               HTTP", RFC 8941, DOI 10.17487/RFC8941, February 2021,
               <https://www.rfc-editor.org/rfc/rfc8941>.
 
+   [URI]      Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
+              Resource Identifier (URI): Generic Syntax", STD 66,
+              RFC 3986, DOI 10.17487/RFC3986, January 2005,
+              <https://www.rfc-editor.org/rfc/rfc3986>.
+
 9.2.  Informative References
 
-   [BCP195]   Sheffer, Y., Holz, R., and P. Saint-Andre,
+   [BCP195]   Sheffer, Y., Holz, R., Saint-Andre, P., and RFC Publisher,
               "Recommendations for Secure Use of Transport Layer
               Security (TLS) and Datagram Transport Layer Security
               (DTLS)", BCP 195, RFC 7525, May 2015.
 
-              Moriarty, K. and S. Farrell, "Deprecating TLS 1.0 and TLS
-              1.1", BCP 195, RFC 8996, March 2021.
+              Moriarty, K., Farrell, S., and RFC Publisher, "Deprecating
+              TLS 1.0 and TLS 1.1", BCP 195, RFC 8996, March 2021.
 
               <https://www.rfc-editor.org/info/bcp195>
 
@@ -3706,7 +3804,8 @@ B.1.  Example Keys
 
    This command was tested with all the example keys on OpenSSL version
    1.1.1m.  Note that some systems cannot produce or use all of these
-   keys directly, and may require additional processing.
+   keys directly, and may require additional processing.  All keys are
+   also made available in JWK format.
 
 B.1.1.  Example Key RSA test
 
@@ -3750,6 +3849,43 @@ B.1.1.  Example Key RSA test
    WtP+fG5Q6Dpdz3LRfm+KwBCWFKQjg7uTxcjerhBWEYPmEMKYwTJF5PBG9/ddvHLQ
    EQeNC8fHGg4UXU8mhHnSBt3EA10qQJfRDs15M38eG2cYwB1PZpDHScDnDA0=
    -----END RSA PRIVATE KEY-----
+
+   The same public and private keypair in JWK format:
+
+   NOTE: '\' line wrapping per RFC 8792
+
+   {
+     "kty": "RSA",
+     "kid": "test-key-rsa",
+     "p": "sqeUJmqXE3LP8tYoIjMIAKiTm9o6psPlc8CrLI9CH0UbuaA2JCOMcCNq8Sy\
+     YbTqgnWlB9ZfcAm_cFpA8tYci9m5vYK8HNxQr-8FS3Qo8N9RJ8d0U5CswDzMYfRgh\
+     AfUGwmlWj5hp1pQzAuhwbOXFtxKHVsMPhz1IBtF9Y8jvgqgYHLbmyiu1mw",
+     "q": "vSlgXQbvHzWmuUBFRHAejRh_naQTDV3GnH4lcRHuFBFZCSLn82xQS2_7xFO\
+     qfabqq17kNcvKfzdvWpGxxJ2cILAq0pZS6DmrZlvBU4IkK2ZHCac_XfWVZFh-PrsH\
+     _EnVkDpfcYR_iw1F40C1q5w8R6WBHaew3SAp",
+     "d": "b8lm5JZ2hUduLnq-OAKCSODeWQ7Uqs7eet2bqeuAD0_2po-PG4qhZoo7VwF\
+     CUTWlJan9wqdxiAPlbEQKkCdFRcbakbjN2TMJjMCHWL5zfgvqhmgeyKsrqg1wSce9\
+     7J1_Mkvn3fh6CbqnwNb6bVFDvTJS3i5FzRhKiv6rUsYm8ZAdF4XRaYkFkeuHPl7rc\
+     -ruUTSAjC4GovxIxoDJFe0r4kbFmkiZOr40e8RZYK7T1IKrSvzfxx5AjnlK_OZOTC\
+     q0L7wBPbMW-IxmQpFCjpI-yuoi3FlZG3LaLNrBMXQF_lLZUDHs77q3fAGxDWwum2h\
+     KBfdBuUQtjlqwjQlgXPsskQ",
+     "e": "AQAB",
+     "qi": "PkbARLOwU_LcZrQy9mmfcPoQlAuCyeu1Q9nH7PYSnbHTFzmiud4Hl8bIXU\
+     9a0_58blDoOl3PctF-b4rAEJYUpCODu5PFyN6uEFYRg-YQwpjBMkXk8Eb39128ctA\
+     RB40Lx8caDhRdTyaEedIG3cQDXSpAl9EOzXkzfx4bZxjAHU9mkMdJwOcMDQ",
+     "dp": "aiodZsrWpi8HFfZfeRs8OS_0L5x6WBl3Y9btoZgsIeruc9uZ8NXTIdxaM6\
+     FdnyNEyOYA1VH94tDYR-xEt1br1ud_dkPslLV_Aac7d7EaYc7cdkb7oC9t6sphVg0\
+     dqE0UTDlOwBxBYMtGmQbJsFzGpmjzVgKqWqJ3B947li2U7t63HXEvKprY2w",
+     "dq": "b0DzpSMb5p42dcQgOTU8Mr4S6JOEhRr_YjErMkpaXUEqvZ3jEB9HRmcRi5\
+     Gtt4NBiBMiY6V9br8a5gjEpiAQoIUcWokBMAYjEeurU8M6JLBd3YaZVVjISaFmdty\
+     nwLFoQxCh6_EC1rSywwrfDpSwO29S9i8Xbaap",
+     "n": "hAKYdtoeoy8zcAcR874L8cnZxKzAGwd7v36APp7Pv6Q2jdsPBRrwWEBnez6\
+     d0UDKDwGbc6nxfEXAy5mbhgajzrw3MOEt8uA5txSKobBpKDeBLOsdJKFqMGmXCQvE\
+     G7YemcxDTRPxAleIAgYYRjTSd_QBwVW9OwNFhekro3RtlinV0a75jfZgkne_YiktS\
+     vLG34lw2zqXBDTC5NHROUqGTlML4PlNZS5Ri2U4aCNx2rUPRcKIlE0PuKxI4T-HIa\
+     Fpv8-rdV6eUgOrB2xeI1dSFFn_nnv5OoZJEIB-VmuKn3DCUcCZSFlQPSXSfBDiUGh\
+     wOw76WuSSsf1D4b_vLoJ10w"
+   }
 
 B.1.2.  Example RSA PSS Key
 
@@ -3796,6 +3932,43 @@ B.1.2.  Example RSA PSS Key
    rOjr9w349JooGXhOxbu8nOxX
    -----END PRIVATE KEY-----
 
+   The same public and private keypair in JWK format:
+
+   NOTE: '\' line wrapping per RFC 8792
+
+   {
+     "kty": "RSA",
+     "kid": "test-key-rsa-pss",
+     "p": "5V-6ISI5yEaCFXm-fk1EM2xwAWekePVCAyvr9QbTlFOCZwt9WwjUjhtKRus\
+     i5Uq-IYZ_tq2WRE4As4b_FHEMtp2AER43IcvmXPqKFBoUktVDS7dThIHrsnRi1U7d\
+     HqVdwiMEMe5jxKNgnsKLpnq-4NyhoS6OeWu1SFozG9J9xQk",
+     "q": "w-wIde17W5Y0Cphp3ZZ0uM8OUq1AkrV2IKauqYHaDxAT32EM4ci2MMER2nI\
+     UEo4g_42lW0zYouFFqONwv0-HyOsgPpdSqKRC5WLgn0VXabjaNcy6KhNPXeJ0Agtq\
+     diDwPeJ2_L_eKwNWQ43RfdQBUquAwSd7SEmmQ8sViqB628M",
+     "d": "lAfIqfpCYomVShfAKnwf2lD9I0wKjkHsCtZCif4kAlwQqqW6N-tIL3bdOR-\
+     VWf0Q1ZBIDtpO91UrG7pansyrPERbNrRJlPiYEyPTHkCT1nD-l2isuiyGLNBNnFoK\
+     fBgA4KAbPJZQatFIV9Cn34JSHnpN5-2ehreGBYHtkwHFtlmzeF3yu5bqRcqOhx8lk\
+     YmBzDAEUFyyXjknU5-WjAT9DzuG0MpOTkcU1EnjnIjyVBZLUB5Lxm8puyq8hH8B_E\
+     5LNC-1oc8j-tDy98UvRTTiYvZvs87cGCFxg0LijNhg7CE3g9piNqB6DzMgA9MHSOw\
+     cElVtfKdYfo4H3OHZXsSmEQ",
+     "e": "AQAB",
+     "qi": "jRAqfYi_tKCjhP9eM0N2XaRlNeoYCTx06GlSLD8d0zc4ZZuEePY10LMGWI\
+     6Y_JC0CvvvQYhNa9sAj4hFjIVLsWeTplVVUezGO1ofLW4kYWVpnMpHgAY1pRM4kyz\
+     o1p3MKYY8DE1BA4KqhSOfhdGs6Ov3Dfj0migZeE7Fu7yc7Fc",
+     "dp": "otDolkxtJ7Sk8gmRJqZCGx6GAvlGznWJfibXPv6xgUAl-G83dD84YgcNGn\
+     oeMxRzEekfDtT5LVMRPF4_AoucsqPqHDyOdfb-dlGBYfOBVxj6w-xF5HE0lV_4J-H\
+     rI63Od9fTSn4lY5d1JjyCVJIcnBEAyiD6EUZbUBh23vDzRcE",
+     "dq": "iZE1S6CpqmBoQDxOsXGQmaeBdhoCqkDSJhEDuS_dLhBq88FQa0UkcE1QvO\
+     K3J2Q21VnfDqGBx7SH1hOFOj-cpz45kNluB832ztxDvnHQ9AIA7h_HY_3VD6YPMNR\
+     VN4bfSYS3abdLR0Z7jsmInGJ9X0_fA0E2tkZIgXeas5EFU0M",
+     "n": "r4tmm3r20Wd_PbqvP1s2-QEtvpuRaV8Yq40gjUR8y2Rjxa6dpG2GXHbPfvM\
+     s8ct-Lh1GH45x28Rw3Ry53mm-oAXjyQ86OnDkZ5N8lYbggD4O3w6M6pAvLkhk95An\
+     dTrifbIFPNU8PPMO7OyrFAHqgDsznjPFmTOtCEcN2Z1FpWgchwuYLPL-Wokqltd11\
+     nqqzi-bJ9cvSKADYdUAAN5WUtzdpiy6LbTgSxP7ociU4Tn0g5I6aDZJ7A8Lzo0KSy\
+     ZYoA485mqcO0GVAdVw9lq4aOT9v6d-nb4bnNkQVklLQ3fVAvJm-xdDOp9LCNCN48V\
+     2pnDOkFV6-U9nV5oyc6XI2w"
+   }
+
 B.1.3.  Example ECC P-256 Test Key
 
    The following key is a public and private elliptical curve key pair
@@ -3813,6 +3986,17 @@ B.1.3.  Example ECC P-256 Test Key
    4GF+hR6Dxh71Z50VGGdldkkDXZCnTNnoXQ==
    -----END EC PRIVATE KEY-----
 
+   The same public and private keypair in JWK format:
+
+   {
+     "kty": "EC",
+     "crv": "P-256",
+     "kid": "test-key-ecc-p256",
+     "d": "UpuF81l-kOxbjf7T4mNSv0r5tN67Gim7rnf6EFpcYDs",
+     "x": "qIVYZVLCrPZHGHjP17CTW0_-D9Lfw0EkjqF7xB4FivA",
+     "y": "Mc4nN9LTDOBhfoUeg8Ye9WedFRhnZXZJA12Qp0zZ6F0"
+   }
+
 B.1.4.  Example Ed25519 Test Key
 
    The following key is an elliptical curve key over the Edwards curve
@@ -3826,6 +4010,16 @@ B.1.4.  Example Ed25519 Test Key
    -----BEGIN PRIVATE KEY-----
    MC4CAQAwBQYDK2VwBCIEIJ+DYvh6SEqVTm50DFtMDoQikTmiCqirVv9mWG9qfSnF
    -----END PRIVATE KEY-----
+
+   The same public and private keypair in JWK format:
+
+   {
+     "kty": "OKP",
+     "crv": "Ed25519",
+     "kid": "test-key-ed25519",
+     "d": "n4Ni-HpISpVObnQMW0wOhCKROaIKqKtW_2ZYb2p9KcU",
+     "x": "JrQLj5P_89iXES9-vFgrIy29clF9CC_oPPsw3c5D0bs"
+   }
 
 B.1.5.  Example Shared Secret
 
@@ -3884,8 +4078,8 @@ B.2.1.  Minimal Signature Using rsa-pss-sha512
    "@signature-params": ();created=1618884473;keyid="test-key-rsa-pss"\
      ;nonce="b3k2pp5k7z-50gnwp.yemd"
 
-   This results in the following Signature-Input and Signature headers
-   being added to the message under the signature label sig-b21:
+   This results in the following Signature-Input and Signature header
+   fields being added to the message under the signature label sig-b21:
 
    NOTE: '\' line wrapping per RFC 8792
 
@@ -3934,8 +4128,8 @@ B.2.2.  Selective Covered Components using rsa-pss-sha512
      ;created=1618884473;keyid="test-key-rsa-pss"\
      ;tag="header-example"
 
-   This results in the following Signature-Input and Signature headers
-   being added to the message under the label sig-b22:
+   This results in the following Signature-Input and Signature header
+   fields being added to the message under the label sig-b22:
 
    NOTE: '\' line wrapping per RFC 8792
 
@@ -3980,8 +4174,8 @@ B.2.3.  Full Coverage using rsa-pss-sha512
      "@authority" "content-type" "content-digest" "content-length")\
      ;created=1618884473;keyid="test-key-rsa-pss"
 
-   This results in the following Signature-Input and Signature headers
-   being added to the message under the label sig-b23:
+   This results in the following Signature-Input and Signature header
+   fields being added to the message under the label sig-b23:
 
    NOTE: '\' line wrapping per RFC 8792
 
@@ -4027,8 +4221,8 @@ B.2.4.  Signing a Response using ecdsa-p256-sha256
    "@signature-params": ("@status" "content-type" "content-digest" \
      "content-length");created=1618884473;keyid="test-key-ecc-p256"
 
-   This results in the following Signature-Input and Signature headers
-   being added to the message under the label sig-b24:
+   This results in the following Signature-Input and Signature header
+   fields being added to the message under the label sig-b24:
 
    NOTE: '\' line wrapping per RFC 8792
 
@@ -4059,8 +4253,8 @@ B.2.5.  Signing a Request using hmac-sha256
    "@signature-params": ("date" "@authority" "content-type")\
      ;created=1618884473;keyid="test-shared-secret"
 
-   This results in the following Signature-Input and Signature headers
-   being added to the message under the label sig-b25:
+   This results in the following Signature-Input and Signature header
+   fields being added to the message under the label sig-b25:
 
    NOTE: '\' line wrapping per RFC 8792
 
@@ -4090,8 +4284,8 @@ B.2.6.  Signing a Request using ed25519
      "content-type" "content-length");created=1618884473\
      ;keyid="test-key-ed25519"
 
-   This results in the following Signature-Input and Signature headers
-   being added to the message under the label sig-b26:
+   This results in the following Signature-Input and Signature header
+   fields being added to the message under the label sig-b26:
 
    NOTE: '\' line wrapping per RFC 8792
 
@@ -4354,6 +4548,20 @@ Document History
    _RFC EDITOR: please remove this section before publication_
 
    *  draft-ietf-httpbis-message-signatures
+
+      -  -14
+
+         o  Target raw non-decoded values for "@query" and "@path".
+
+         o  Add method for signing trailers.
+
+         o  Call out potential issues of list-based field values.
+
+         o  Update IANA registry for header fields.
+
+         o  Call out potential issues with Content-Digest in example.
+
+         o  Add JWK formats for all keys.
 
       -  -13
 
