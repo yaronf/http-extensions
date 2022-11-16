@@ -6,7 +6,7 @@ HTTP                                                       M. Nottingham
 Internet-Draft                                                Cloudflare
 Obsoletes: 8941 (if approved)                                 P.-H. Kamp
 Intended status: Standards Track               The Varnish Cache Project
-Expires: 19 May 2023                                    15 November 2022
+Expires: 20 May 2023                                    16 November 2022
 
 
                     Structured Field Values for HTTP
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 May 2023.
+   This Internet-Draft will expire on 20 May 2023.
 
 Copyright Notice
 

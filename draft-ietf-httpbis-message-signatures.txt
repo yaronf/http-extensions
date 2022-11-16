@@ -5,10 +5,10 @@
 HTTP                                                     A. Backman, Ed.
 Internet-Draft                                                    Amazon
 Intended status: Standards Track                          J. Richer, Ed.
-Expires: 19 May 2023                                 Bespoke Engineering
+Expires: 20 May 2023                                 Bespoke Engineering
                                                                M. Sporny
                                                           Digital Bazaar
-                                                        15 November 2022
+                                                        16 November 2022
 
 
                         HTTP Message Signatures
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 May 2023.
+   This Internet-Draft will expire on 20 May 2023.
 
 Copyright Notice
 
@@ -879,21 +879,32 @@ Table of Contents
 
    For example, given the following message:
 
-   ```http-message HTTP/1.1 200 OK Content-Type: text/plain Transfer-
-   Encoding: chunked Trailer: Expires
+   HTTP/1.1 200 OK
+   Content-Type: text/plain
+   Transfer-Encoding: chunked
+   Trailer: Expires
 
-   4 HTTP 7 Message 10 Signatures 0 Expires: Wed, 9 Nov 2022 07:28:00
-   GMT ```
+   4
+   HTTP
+   7
+   Message
+   10
+   Signatures
+   0
+   Expires: Wed, 9 Nov 2022 07:28:00 GMT
 
    The signer decides to add both the Trailer header field as well as
-   the Expires trailer to the signature base:
+   the Expires trailer to the signature base, along with the status code
+   derived component:
 
-   "@status": 200 "trailer": Expires "expires";tr: Wed, 9 Nov 2022
-   07:28:00 GMT
+   "@status": 200
+   "trailer": Expires
+   "expires";tr: Wed, 9 Nov 2022 07:28:00 GMT
 
-   IF a field is available as both a header and trailer in a message,
-   both values MAY be signed separately.  The values of header fields
-   and trailer fields of the same name MUST NOT be combined.
+   If a field is available as both a header and trailer in a message,
+   both values MAY be signed, but the values MUST be signed separately.
+   The values of header fields and trailer fields of the same name MUST
+   NOT be combined for purposes of the signature.
 
    Since trailer fields could be merged into the header fields or
    dropped entirely by intermediaries as per Section 6.5.1 of [HTTP], it
